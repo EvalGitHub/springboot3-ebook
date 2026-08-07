@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpringBoot3 电子书 - 尚硅谷</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-light: #e8f0fe;
+      --bg: #ffffff;
+      --sidebar-bg: #f8f9fa;
+      --text: #202124;
+      --text-light: #5f6368;
+      --border: #dadce0;
+      --sidebar-width: 280px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; left: 0; top: 0;
+      width: var(--sidebar-width); height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      overflow-y: auto; z-index: 100;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-header {
+      padding: 20px; background: var(--primary); color: white;
+    }
+    .sidebar-header h1 { font-size: 20px; margin-bottom: 4px; }
+    .sidebar-header p { font-size: 13px; opacity: 0.9; }
+
+    /* Search */
+    .search-container {
+      padding: 16px; border-bottom: 1px solid var(--border);
+    }
+    .search-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .search-tab {
+      flex: 1; padding: 8px; border: 1px solid var(--border);
+      background: white; border-radius: 4px; cursor: pointer; font-size: 13px; text-align: center;
+    }
+    .search-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    #searchInput {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 4px; font-size: 14px;
+    }
+    #searchInput:focus { outline: none; border-color: var(--primary); }
+
+    /* TOC */
+    .toc { padding: 8px 0; list-style: none; flex: 1; overflow-y: auto; }
+    .toc li { margin: 1px 0; }
+    .toc a {
+      display: block; padding: 10px 16px;
+      color: var(--text-light); text-decoration: none;
+      font-size: 14px; border-radius: 4px; cursor: pointer;
+    }
+    .toc a:hover { background: var(--primary-light); color: var(--primary); }
+    .toc a.active { background: var(--primary-light); color: var(--primary); font-weight: 500; }
+
+    /* Expandable chapter items */
+    .toc-chapter { display: flex; align-items: stretch; }
+    .toc-chapter > a { flex: 1; }
+    .toc-toggle {
+      width: 32px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-light); font-size: 10px;
+      transition: transform 0.2s; flex-shrink: 0;
+    }
+    .toc-toggle:hover { color: var(--primary); }
+    .toc-toggle.expanded { transform: rotate(90deg); }
+    .toc-subheadings { display: none; padding: 0; margin: 0; list-style: none; }
+    .toc-subheadings.open { display: block; }
+    .toc-subheadings a {
+      padding: 6px 16px 6px 28px; font-size: 13px; color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Search results */
+    .search-results {
+      padding: 16px; list-style: none; flex: 1; overflow-y: auto;
+    }
+    .search-result {
+      padding: 12px; margin-bottom: 8px;
+      border: 1px solid var(--border); border-radius: 4px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .search-result:hover { background: var(--primary-light); }
+    .search-result-title { font-weight: 500; color: var(--primary); margin-bottom: 4px; font-size: 13px; }
+    .search-result-snippet { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+    .search-result-snippet mark { background: #fef08a; padding: 0 2px; border-radius: 2px; }
+    .search-empty { text-align: center; color: var(--text-light); padding: 20px; font-size: 13px; }
+
+    /* Main content */
+    .main {
+      margin-left: var(--sidebar-width);
+      padding: 20px 40px 40px;
+      max-width: 1000px;
+    }
+
+    .page-container {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .page-container img {
+      max-width: 100%; height: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+    .page-label {
+      font-size: 12px; color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* Loading placeholder for lazy images */
+    .page-container.loading {
+      min-height: 200px;
+      background: var(--sidebar-bg);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-light); font-size: 14px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      position: sticky; top: 0; z-index: 50;
+      padding: 10px 0; margin-bottom: 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .toolbar button {
+      background: var(--primary); color: white; border: none;
+      padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 13px;
+      transition: opacity 0.2s;
+    }
+    .toolbar button:hover { opacity: 0.85; }
+    .toolbar .page-info { font-size: 13px; color: var(--text-light); margin-left: auto; }
+    .toolbar input[type=range] { width: 140px; accent-color: var(--primary); }
+
+    /* Mobile */
+    .menu-toggle {
+      display: none; position: fixed; top: 16px; left: 16px; z-index: 200;
+      background: var(--primary); color: white; border: none;
+      padding: 10px 14px; border-radius: 4px; cursor: pointer; font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 60px 16px 20px; }
+      .menu-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h1>SpringBoot3 电子书</h1>
+    <p>尚硅谷 &middot; SpringBoot 3</p>
+  </div>
+
+  <div class="search-container">
+    <div class="search-tabs">
+      <button class="search-tab active" data-mode="toc" onclick="switchSearchMode('toc')">按章节</button>
+      <button class="search-tab" data-mode="fulltext" onclick="switchSearchMode('fulltext')">全文检索</button>
+    </div>
+    <input type="text" id="searchInput" placeholder="搜索章节..." oninput="onSearchInput(this.value)">
+  </div>
+
+  <ul class="toc" id="tocList">
+    <!-- Built by JS -->
+  </ul>
+
+  <ul class="search-results" id="searchResults" style="display:none;"></ul>
+</nav>
+
+<main class="main" id="content">
+  <div class="toolbar">
+    <button onclick="prevPage()">&#8592; 上一页</button>
+    <button onclick="nextPage()">下一页 &#8594;</button>
+    <input type="range" id="pageSlider" min="1" max="262" value="1" oninput="goToPage(this.value)">
+    <span class="page-info" id="pageInfo">第 1 页 / 共 262 页</span>
+  </div>
+  <div id="pagesContainer">
+    <!-- Pages loaded by JS -->
+  </div>
+</main>
+
+<script>
+const totalPages = 262;
+const chapters = [{"page": 1, "title": "SpringBoot - 快速入门"}, {"page": 27, "title": "SpringBoot - Web开发"}, {"page": 77, "title": "SpringBoot - 数据访问"}, {"page": 83, "title": "SpringBoot - 基础特性"}, {"page": 98, "title": "SpringBoot - 核心原理"}, {"page": 112, "title": "附录:SpringBoot 改变 & 新特性"}, {"page": 113, "title": "场景整合 - 环境准备"}, {"page": 119, "title": "场景整合 - NoSQL"}, {"page": 123, "title": "场景整合 - 接口文档"}, {"page": 129, "title": "场景整合 - 远程调用"}, {"page": 136, "title": "场景整合 - 消息服务"}, {"page": 143, "title": "场景整合 - Web安全"}, {"page": 157, "title": "场景整合 - 可观测性"}, {"page": 166, "title": "场景整合 - AOT"}, {"page": 187, "title": "响应式编程 - Reactor核心"}, {"page": 218, "title": "响应式编程 - Spring WebFlux"}, {"page": 235, "title": "响应式编程 - R2DBC"}, {"page": 248, "title": "响应式编程 - Spring Security Reactive"}];
+const sections = [{"title": "SpringBoot 核心特性", "chapters": [{"page": 1, "title": "SpringBoot - 快速入门"}, {"page": 27, "title": "SpringBoot - Web开发"}, {"page": 77, "title": "SpringBoot - 数据访问"}, {"page": 83, "title": "SpringBoot - 基础特性"}, {"page": 98, "title": "SpringBoot - 核心原理"}]}, {"title": "附录", "chapters": [{"page": 112, "title": "附录:SpringBoot 改变 & 新特性"}]}, {"title": "SpringBoot 场景整合", "chapters": [{"page": 113, "title": "场景整合 - 环境准备"}, {"page": 119, "title": "场景整合 - NoSQL"}, {"page": 123, "title": "场景整合 - 接口文档"}, {"page": 129, "title": "场景整合 - 远程调用"}, {"page": 136, "title": "场景整合 - 消息服务"}, {"page": 143, "title": "场景整合 - Web安全"}, {"page": 157, "title": "场景整合 - 可观测性"}, {"page": 166, "title": "场景整合 - AOT"}]}, {"title": "SpringBoot 响应式编程", "chapters": [{"page": 187, "title": "响应式编程 - Reactor核心"}, {"page": 218, "title": "响应式编程 - Spring WebFlux"}, {"page": 235, "title": "响应式编程 - R2DBC"}, {"page": 248, "title": "响应式编程 - Spring Security Reactive"}]}];
+let currentPage = 0;
+let currentChapterPage = -1;
+let loadedPages = new Set();
+let searchMode = 'toc';
+let searchDebounceTimer = null;
+let searchIndex = null;
+let headingIndex = null;
+
+function getChapterRange(chapterPage) {
+  const chapterPagesSorted = chapters.map(c => c.page).sort((a, b) => a - b);
+  let chapterEnd = totalPages;
+  for (const cp of chapterPagesSorted) {
+    if (cp > chapterPage) { chapterEnd = cp; break; }
+  }
+  return [chapterPage, chapterEnd];
+}
+
+function findChapterForPage(pageIdx) {
+  const chapterPagesSorted = chapters.map(c => c.page).sort((a, b) => a - b);
+  let chapterStart = -1;
+  for (let i = chapterPagesSorted.length - 1; i >= 0; i--) {
+    if (pageIdx >= chapterPagesSorted[i]) { chapterStart = chapterPagesSorted[i]; break; }
+  }
+  return chapterStart;
+}
+
+// Build sidebar TOC
+function buildTOC() {
+  const toc = document.getElementById('tocList');
+  let html = '';
+  sections.forEach(section => {
+    html += '<li style="font-weight:600;padding:10px 16px;color:var(--text);font-size:14px;">' + section.title + '</li>';
+    section.chapters.forEach(ch => {
+      html += '<li class="toc-chapter-item">' +
+        '<div class="toc-chapter">' +
+          '<a data-page="' + ch.page + '" onclick="jumpToPage(' + (ch.page + 1) + ')">' + ch.title + '</a>' +
+          '<span class="toc-toggle" data-chapter-page="' + ch.page + '" onclick="toggleChapter(' + ch.page + ', this)">&#9654;</span>' +
+        '</div>' +
+        '<ul class="toc-subheadings" id="sub-' + ch.page + '"></ul>' +
+      '</li>';
+    });
+  });
+  toc.innerHTML = html;
+}
+
+function toggleChapter(chapterPage, toggleEl) {
+  const subList = document.getElementById('sub-' + chapterPage);
+  if (!subList) return;
+  if (subList.classList.contains('open')) {
+    subList.classList.remove('open');
+    toggleEl.classList.remove('expanded');
+    return;
+  }
+  if (!subList.dataset.loaded) {
+    loadHeadingIndex().then(() => {
+      const [chStart, chEnd] = getChapterRange(chapterPage);
+      const headings = headingIndex.filter(h => h.page >= chStart && h.page < chEnd);
+      if (headings.length === 0) {
+        subList.innerHTML = '<li style="padding:6px 28px;font-size:12px;color:var(--text-light);opacity:0.6;">无子标题</li>';
+      } else {
+        let html = '';
+        headings.forEach(h => {
+          html += '<li><a data-page="' + h.page + '" onclick="jumpToPage(' + (h.page + 1) + ')">' + h.title + '</a></li>';
+        });
+        subList.innerHTML = html;
+      }
+      subList.dataset.loaded = 'true';
+      subList.classList.add('open');
+      toggleEl.classList.add('expanded');
+    });
+  } else {
+    subList.classList.add('open');
+    toggleEl.classList.add('expanded');
+  }
+}
+
+function switchSearchMode(mode) {
+  searchMode = mode;
+  document.querySelectorAll('.search-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.mode === mode);
+  });
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').placeholder = mode === 'toc' ? '搜索章节...' : '搜索全书内容...';
+  document.getElementById('tocList').style.display = mode === 'toc' ? 'block' : 'none';
+  document.getElementById('searchResults').style.display = mode === 'fulltext' ? 'block' : 'none';
+  document.getElementById('searchResults').innerHTML = '';
+}
+
+function buildSnippet(text, terms) {
+  const lower = text.toLowerCase();
+  let pos = lower.indexOf(terms[0].toLowerCase());
+  if (pos === -1) pos = 0;
+  const start = Math.max(0, pos - 40);
+  const end = Math.min(text.length, pos + 120);
+  let snippet = (start > 0 ? '...' : '') + text.substring(start, end) + (end < text.length ? '...' : '');
+  terms.forEach(t => {
+    const regex = new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    snippet = snippet.replace(regex, m => '<mark>' + m + '</mark>');
+  });
+  return snippet;
+}
+
+async function loadSearchIndex() {
+  if (searchIndex) return true;
+  try {
+    const resp = await fetch('assets/search-index.json');
+    searchIndex = await resp.json();
+    return true;
+  } catch (e) {
+    console.error('Failed to load search index:', e);
+    return false;
+  }
+}
+
+function renderSearchResults(query) {
+  const resultsEl = document.getElementById('searchResults');
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    resultsEl.innerHTML = '<li class="search-empty">输入关键词搜索全书内容</li>';
+    return;
+  }
+  const terms = q.split(/\s+/).filter(Boolean);
+  const results = [];
+  for (const entry of searchIndex.entries) {
+    const text = entry[1].toLowerCase();
+    if (terms.every(t => text.includes(t))) {
+      results.push({
+        page: entry[0],
+        title: '第 ' + (entry[0] + 1) + ' 页',
+        snippet: buildSnippet(entry[1], terms)
+      });
+    }
+  }
+  if (results.length === 0) {
+    resultsEl.innerHTML = '<li class="search-empty">未找到匹配内容</li>';
+    return;
+  }
+  const top = results.slice(0, 50);
+  resultsEl.innerHTML = '';
+  for (const r of top) {
+    const li = document.createElement('li');
+    li.className = 'search-result';
+    li.onclick = () => { jumpToPage(r.page + 1); };
+    li.innerHTML = '<div class="search-result-title">' + r.title + '</div><div class="search-result-snippet">' + r.snippet + '</div>';
+    resultsEl.appendChild(li);
+  }
+}
+
+async function onSearchInput(value) {
+  if (searchMode === 'toc') {
+    const q = value.toLowerCase();
+    document.querySelectorAll('.toc li').forEach(li => {
+      li.style.display = li.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+    });
+    return;
+  }
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  if (!value.trim()) {
+    renderSearchResults('');
+    return;
+  }
+  searchDebounceTimer = setTimeout(async () => {
+    if (!searchIndex) {
+      const loaded = await loadSearchIndex();
+      if (!loaded) return;
+    }
+    renderSearchResults(value);
+  }, 250);
+}
+
+function jumpToPage(num) {
+  goToPage(num);
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+// Load a chapter's pages into DOM
+function loadChapter(chapterPage) {
+  if (currentChapterPage === chapterPage) return;
+  currentChapterPage = chapterPage;
+  loadedPages.clear();
+
+  const [chStart, chEnd] = getChapterRange(chapterPage);
+  const container = document.getElementById('pagesContainer');
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);">加载中...</div>';
+
+  requestAnimationFrame(() => {
+    let html = '';
+    for (let i = chStart; i < chEnd; i++) {
+      html += '<div class="page-container loading" id="page-' + i + '" data-page="' + i + '">加载中...</div>';
+    }
+    container.innerHTML = html;
+    setupLazyLoading();
+  });
+}
+
+function goToPage(num) {
+  num = parseInt(num);
+  if (num < 1) num = 1;
+  if (num > totalPages) num = totalPages;
+  const pageIdx = num - 1;
+
+  const chapterStart = findChapterForPage(pageIdx);
+  if (chapterStart < 0) return;
+
+  if (chapterStart !== currentChapterPage) {
+    loadChapter(chapterStart);
+    setTimeout(() => _doGoToPage(num), 100);
+    return;
+  }
+  _doGoToPage(num);
+}
+
+function _doGoToPage(num) {
+  num = parseInt(num);
+  if (num < 1) num = 1;
+  if (num > totalPages) num = totalPages;
+  currentPage = num - 1;
+
+  document.getElementById('pageSlider').value = num;
+  document.getElementById('pageInfo').textContent = '第 ' + num + ' 页 / 共 ' + totalPages + ' 页';
+
+  document.querySelectorAll('.toc a').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.page) === currentPage);
+  });
+
+  // Auto-expand chapter subheadings
+  const chapterStart = findChapterForPage(currentPage);
+  if (chapterStart >= 0) {
+    const subList = document.getElementById('sub-' + chapterStart);
+    if (subList && !subList.classList.contains('open')) {
+      const toggleEl = document.querySelector('.toc-toggle[data-chapter-page="' + chapterStart + '"]');
+      if (subList.dataset.loaded) {
+        subList.classList.add('open');
+        if (toggleEl) toggleEl.classList.add('expanded');
+      } else {
+        toggleChapter(chapterStart, toggleEl);
+      }
+    }
+  }
+
+  const pageEl = document.getElementById('page-' + currentPage);
+  if (pageEl) {
+    pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function nextPage() {
+  const [chStart, chEnd] = getChapterRange(currentChapterPage);
+  if (currentPage + 1 < chEnd) {
+    goToPage(currentPage + 2);
+  } else {
+    // Move to next chapter
+    const chapterPagesSorted = chapters.map(c => c.page).sort((a, b) => a - b);
+    const idx = chapterPagesSorted.indexOf(currentChapterPage);
+    if (idx >= 0 && idx < chapterPagesSorted.length - 1) {
+      goToPage(chapterPagesSorted[idx + 1] + 1);
+    }
+  }
+}
+
+function prevPage() {
+  const [chStart, chEnd] = getChapterRange(currentChapterPage);
+  if (currentPage > chStart) {
+    goToPage(currentPage);
+  } else {
+    // Move to previous chapter
+    const chapterPagesSorted = chapters.map(c => c.page).sort((a, b) => a - b);
+    const idx = chapterPagesSorted.indexOf(currentChapterPage);
+    if (idx > 0) {
+      const prevCh = chapterPagesSorted[idx - 1];
+      const [prevStart, prevEnd] = getChapterRange(prevCh);
+      goToPage(prevEnd);
+    }
+  }
+}
+
+// Lazy load pages using IntersectionObserver
+function setupLazyLoading() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const container = entry.target;
+        const pageIdx = parseInt(container.dataset.page);
+        if (!loadedPages.has(pageIdx)) {
+          loadedPages.add(pageIdx);
+          const img = document.createElement('img');
+          img.src = 'images/page-' + String(pageIdx).padStart(3, '0') + '.png';
+          img.alt = '第 ' + (pageIdx + 1) + ' 页';
+          img.loading = 'lazy';
+          container.innerHTML = '';
+          container.appendChild(img);
+          const label = document.createElement('div');
+          label.className = 'page-label';
+          label.textContent = '第 ' + (pageIdx + 1) + ' 页';
+          container.appendChild(label);
+          container.classList.remove('loading');
+        }
+        observer.unobserve(container);
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  document.querySelectorAll('.page-container').forEach(el => observer.observe(el));
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); nextPage(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevPage(); }
+  if (e.key === 'Home') { e.preventDefault(); goToPage(1); }
+  if (e.key === 'End') { e.preventDefault(); goToPage(totalPages); }
+});
+
+// Handle hash navigation
+function handleHash() {
+  const match = location.hash.match(/^#page-(\d+)$/);
+  if (match) {
+    goToPage(parseInt(match[1]));
+  }
+}
+window.addEventListener('hashchange', handleHash);
+
+// === Heading index for subheadings ===
+async function loadHeadingIndex() {
+  if (headingIndex) return true;
+  try {
+    const resp = await fetch('assets/heading-index.json');
+    headingIndex = await resp.json();
+    return true;
+  } catch (e) {
+    console.error('Failed to load heading index:', e);
+    return false;
+  }
+}
+
+loadHeadingIndex();
+
+// Init
+buildTOC();
+let initialPage = 1;
+let initialChapter = 0;
+const hashMatch = location.hash.match(/^#page-(\d+)$/);
+if (hashMatch) {
+  initialPage = parseInt(hashMatch[1]);
+  initialChapter = findChapterForPage(initialPage - 1);
+}
+if (initialChapter < 0) initialChapter = 0;
+loadChapter(initialChapter);
+setTimeout(() => goToPage(initialPage), 150);
+if (!location.hash) {
+  history.replaceState(null, null, '#page-1');
+}
+</script>
+</body>
+</html>

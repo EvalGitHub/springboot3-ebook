@@ -1,0 +1,542 @@
+[
+  {
+    "page": 1,
+    "level": 0,
+    "num": "1",
+    "title": "1、简介"
+  },
+  {
+    "page": 2,
+    "level": 0,
+    "num": "2",
+    "title": "2、快速体验"
+  },
+  {
+    "page": 7,
+    "level": 0,
+    "num": "3",
+    "title": "3、自定义版本号"
+  },
+  {
+    "page": 7,
+    "level": 0,
+    "num": "4",
+    "title": "4、第三方的jar包"
+  },
+  {
+    "page": 7,
+    "level": 0,
+    "num": "3",
+    "title": "3、应用分析"
+  },
+  {
+    "page": 14,
+    "level": 0,
+    "num": "4",
+    "title": "4、核心技能"
+  },
+  {
+    "page": 31,
+    "level": 0,
+    "num": "1",
+    "title": "1、整合web场景"
+  },
+  {
+    "page": 77,
+    "level": 0,
+    "num": "0",
+    "title": "整合SSM场景"
+  },
+  {
+    "page": 78,
+    "level": 1,
+    "num": "4",
+    "title": "4. CRUD编写"
+  },
+  {
+    "page": 78,
+    "level": 1,
+    "num": "5",
+    "title": "5. 自动配置原理"
+  },
+  {
+    "page": 80,
+    "level": 1,
+    "num": "6",
+    "title": "6. 快速定位生效的配置"
+  },
+  {
+    "page": 80,
+    "level": 1,
+    "num": "7",
+    "title": "7. 扩展：整合其他数据源"
+  },
+  {
+    "page": 86,
+    "level": 0,
+    "num": "0",
+    "title": "3. 外部化配置"
+  },
+  {
+    "page": 90,
+    "level": 0,
+    "num": "0",
+    "title": "4. 单元测试-JUnit5"
+  },
+  {
+    "page": 98,
+    "level": 0,
+    "num": "0",
+    "title": "1. 事件和监听器"
+  },
+  {
+    "page": 100,
+    "level": 1,
+    "num": "2",
+    "title": "2. 事件触发时机"
+  },
+  {
+    "page": 105,
+    "level": 0,
+    "num": "0",
+    "title": "2. 自动配置原理"
+  },
+  {
+    "page": 107,
+    "level": 1,
+    "num": "2",
+    "title": "2. 进阶理解"
+  },
+  {
+    "page": 109,
+    "level": 0,
+    "num": "0",
+    "title": "3. 自定义starter"
+  },
+  {
+    "page": 110,
+    "level": 1,
+    "num": "1",
+    "title": "1. 业务代码"
+  },
+  {
+    "page": 110,
+    "level": 1,
+    "num": "2",
+    "title": "2. 基本抽取"
+  },
+  {
+    "page": 111,
+    "level": 1,
+    "num": "4",
+    "title": "4. 完全自动配置"
+  },
+  {
+    "page": 113,
+    "level": 0,
+    "num": "0",
+    "title": "0. 云服务器"
+  },
+  {
+    "page": 113,
+    "level": 0,
+    "num": "0",
+    "title": "1. Docker安装"
+  },
+  {
+    "page": 117,
+    "level": 0,
+    "num": "0",
+    "title": "4. 启动环境"
+  },
+  {
+    "page": 117,
+    "level": 0,
+    "num": "0",
+    "title": "5. 验证"
+  },
+  {
+    "page": 119,
+    "level": 0,
+    "num": "0",
+    "title": "Redis整合"
+  },
+  {
+    "page": 120,
+    "level": 1,
+    "num": "3",
+    "title": "3. 定制化"
+  },
+  {
+    "page": 123,
+    "level": 0,
+    "num": "0",
+    "title": "OpenAPI 3 与 Swagger"
+  },
+  {
+    "page": 124,
+    "level": 1,
+    "num": "3",
+    "title": "3. 使用"
+  },
+  {
+    "page": 136,
+    "level": 0,
+    "num": "0",
+    "title": "消息队列-场景"
+  },
+  {
+    "page": 137,
+    "level": 1,
+    "num": "3",
+    "title": "3. 削峰"
+  },
+  {
+    "page": 137,
+    "level": 1,
+    "num": "4",
+    "title": "4. 缓冲"
+  },
+  {
+    "page": 138,
+    "level": 0,
+    "num": "0",
+    "title": "消息队列-Kafka"
+  },
+  {
+    "page": 139,
+    "level": 1,
+    "num": "2",
+    "title": "2. Kafka工作原理"
+  },
+  {
+    "page": 140,
+    "level": 1,
+    "num": "4",
+    "title": "4. 消息发送"
+  },
+  {
+    "page": 141,
+    "level": 1,
+    "num": "5",
+    "title": "5. 消息监听"
+  },
+  {
+    "page": 142,
+    "level": 1,
+    "num": "6",
+    "title": "6. 参数配置"
+  },
+  {
+    "page": 142,
+    "level": 1,
+    "num": "7",
+    "title": "7. 自动配置原理"
+  },
+  {
+    "page": 143,
+    "level": 1,
+    "num": "1",
+    "title": "1. 安全架构"
+  },
+  {
+    "page": 148,
+    "level": 1,
+    "num": "3",
+    "title": "3. 使用"
+  },
+  {
+    "page": 150,
+    "level": 1,
+    "num": "4",
+    "title": "4. 实战"
+  },
+  {
+    "page": 157,
+    "level": 1,
+    "num": "1",
+    "title": "1. 实战"
+  },
+  {
+    "page": 162,
+    "level": 0,
+    "num": "0",
+    "title": "2. 监控案例落地"
+  },
+  {
+    "page": 163,
+    "level": 1,
+    "num": "2",
+    "title": "2. 导入依赖"
+  },
+  {
+    "page": 165,
+    "level": 1,
+    "num": "5",
+    "title": "5. 效果"
+  },
+  {
+    "page": 166,
+    "level": 0,
+    "num": "0",
+    "title": "1. AOT与JIT"
+  },
+  {
+    "page": 168,
+    "level": 1,
+    "num": "3",
+    "title": "3. JVM架构"
+  },
+  {
+    "page": 169,
+    "level": 1,
+    "num": "4",
+    "title": "4. Java的执行过程"
+  },
+  {
+    "page": 171,
+    "level": 1,
+    "num": "5",
+    "title": "5. JVM编译器"
+  },
+  {
+    "page": 172,
+    "level": 1,
+    "num": "6",
+    "title": "6. 分层编译"
+  },
+  {
+    "page": 174,
+    "level": 1,
+    "num": "1",
+    "title": "1. 架构"
+  },
+  {
+    "page": 175,
+    "level": 1,
+    "num": "2",
+    "title": "2. 安装"
+  },
+  {
+    "page": 181,
+    "level": 1,
+    "num": "3",
+    "title": "3. 测试"
+  },
+  {
+    "page": 183,
+    "level": 0,
+    "num": "0",
+    "title": "3. SpringBoot整合"
+  },
+  {
+    "page": 184,
+    "level": 1,
+    "num": "3",
+    "title": "3. 常见问题"
+  },
+  {
+    "page": 196,
+    "level": 0,
+    "num": "1",
+    "title": "1、快速上手"
+  },
+  {
+    "page": 197,
+    "level": 0,
+    "num": "2",
+    "title": "2、响应式编程"
+  },
+  {
+    "page": 205,
+    "level": 0,
+    "num": "3",
+    "title": "3、核心特性"
+  },
+  {
+    "page": 205,
+    "level": 0,
+    "num": "1",
+    "title": "1、Mono和Flux"
+  },
+  {
+    "page": 207,
+    "level": 0,
+    "num": "3",
+    "title": "3、流的取消"
+  },
+  {
+    "page": 209,
+    "level": 0,
+    "num": "1",
+    "title": "1、buffer：缓冲"
+  },
+  {
+    "page": 210,
+    "level": 0,
+    "num": "2",
+    "title": "2、limit：限流"
+  },
+  {
+    "page": 210,
+    "level": 0,
+    "num": "2",
+    "title": "2、多线程-create"
+  },
+  {
+    "page": 211,
+    "level": 0,
+    "num": "8",
+    "title": "8、自定义线程调度"
+  },
+  {
+    "page": 212,
+    "level": 0,
+    "num": "9",
+    "title": "9、错误处理"
+  },
+  {
+    "page": 214,
+    "level": 0,
+    "num": "3",
+    "title": "3、流异常完成"
+  },
+  {
+    "page": 219,
+    "level": 0,
+    "num": "0",
+    "title": "0、组件对比"
+  },
+  {
+    "page": 220,
+    "level": 0,
+    "num": "1",
+    "title": "1、引入"
+  },
+  {
+    "page": 223,
+    "level": 0,
+    "num": "1",
+    "title": "1、请求处理流程"
+  },
+  {
+    "page": 225,
+    "level": 0,
+    "num": "4",
+    "title": "4、注解开发"
+  },
+  {
+    "page": 225,
+    "level": 0,
+    "num": "1",
+    "title": "1、目标方法传参"
+  },
+  {
+    "page": 226,
+    "level": 0,
+    "num": "2",
+    "title": "2、返回值写法"
+  },
+  {
+    "page": 227,
+    "level": 0,
+    "num": "5",
+    "title": "5、文件上传"
+  },
+  {
+    "page": 228,
+    "level": 0,
+    "num": "6",
+    "title": "6、错误处理"
+  },
+  {
+    "page": 229,
+    "level": 0,
+    "num": "8",
+    "title": "8、自定义Flux配置"
+  },
+  {
+    "page": 235,
+    "level": 0,
+    "num": "1",
+    "title": "1、导入依赖"
+  },
+  {
+    "page": 235,
+    "level": 0,
+    "num": "2",
+    "title": "2、编写配置"
+  },
+  {
+    "page": 235,
+    "level": 0,
+    "num": "0",
+    "title": "0、整合"
+  },
+  {
+    "page": 238,
+    "level": 0,
+    "num": "2",
+    "title": "2、编程式组件"
+  },
+  {
+    "page": 238,
+    "level": 0,
+    "num": "3",
+    "title": "3、RBAC-SQL练习"
+  },
+  {
+    "page": 242,
+    "level": 0,
+    "num": "4",
+    "title": "4、最佳实践"
+  },
+  {
+    "page": 248,
+    "level": 0,
+    "num": "1",
+    "title": "1、整合"
+  },
+  {
+    "page": 250,
+    "level": 0,
+    "num": "2",
+    "title": "2、开发"
+  },
+  {
+    "page": 250,
+    "level": 0,
+    "num": "1",
+    "title": "1、应用安全"
+  },
+  {
+    "page": 250,
+    "level": 0,
+    "num": "2",
+    "title": "2、RBAC权限模型"
+  },
+  {
+    "page": 251,
+    "level": 0,
+    "num": "3",
+    "title": "3、认证"
+  },
+  {
+    "page": 251,
+    "level": 0,
+    "num": "1",
+    "title": "1、静态资源放行"
+  },
+  {
+    "page": 251,
+    "level": 0,
+    "num": "2",
+    "title": "2、其他请求需要登录"
+  },
+  {
+    "page": 256,
+    "level": 0,
+    "num": "4",
+    "title": "4、授权"
+  }
+]
